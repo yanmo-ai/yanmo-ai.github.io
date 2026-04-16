@@ -43,15 +43,13 @@
   --radius-xl:    40px;
 
   --section-gap:  120px;
-  --container-w:  1140px;
+  --container-w:  1200px;
 }
 
 html {
   height: 100%;
-  min-width: 1200px;
   overflow: auto;
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
 }
 
 body {
@@ -64,7 +62,6 @@ body {
   font-weight: 300;
   line-height: 1.75;
   min-height: 100%;
-  min-width: 1200px;
   position: relative;
   /* overflow handled by html */
 }
@@ -89,24 +86,22 @@ body {
 
 /* ---- Utility ---- */
 .container {
-  width: 1200px;
+  width: min(var(--container-w), 92vw);
   margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
 }
 
 /* 统一管理 Section 尺寸和自适应缩放 */
 section {
   position: relative;
   z-index: 1;
-  scroll-snap-align: center;
-  /* 确保每页内容尽量在视口内展示完全 */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* 如果内容过多超出，允许内容撑开高度，但通常保持 100vh 体验最好 */
+  box-sizing: border-box;
   min-height: 100vh;
-  /* 针对小屏幕（高度较小）的适配：增加上下内边距，防止贴边 */
-  padding: 80px 0;
-}
+  padding: 80px 0;}
 
 /* 针对13寸笔记本/小高度屏幕的媒体查询 */
 @media (max-width: 1440px), (max-height: 800px) {
@@ -234,7 +229,6 @@ section {
   left: 0;
   right: 0;
   z-index: 100;
-  min-width: 1200px;
   padding: 16px 0;
   background: rgba(250, 247, 243, 0.82);
   backdrop-filter: blur(20px);
@@ -473,8 +467,15 @@ section {
    FINAL CTA
    ============================================ */
 .final-cta {
-  padding: var(--section-gap) 0;
+  padding: 96px 0 40px;
   text-align: center;
+  justify-content: space-between;
+}
+.final-cta-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 .final-inner {
   max-width: 560px;
@@ -502,6 +503,18 @@ section {
   font-size: 15px;
   color: var(--ink-soft);
   max-width: 400px;
+}
+.final-cta-footer {
+  width: 100%;
+  border-top: 1px solid var(--ink-wash-2);
+  padding-top: 28px;
+  margin-top: 24px;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+.final-cta-footer .footer-inner {
+  gap: 14px;
 }
 
 /* ============================================
@@ -534,7 +547,7 @@ section {
 /* === VS Code 三屏展示 === */
 .vscode-screens {
   display: grid;
-  grid-template-columns: 1fr 1.3fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 28px;
   margin-top: 56px;
   align-items: center;
@@ -547,19 +560,20 @@ section {
   transition: transform 0.3s ease;
 }
 
-/* 左右两侧卡片缩小并下移，形成错落感 */
+/* 三张卡片统一尺寸 */
 .vs-screen-card:nth-child(1),
+.vs-screen-card:nth-child(2),
 .vs-screen-card:nth-child(3) {
-  transform: scale(0.88) translateY(24px);
+  transform: scale(1) translateY(0);
   transform-origin: top center;
-  opacity: 0.85;
+  opacity: 1;
 }
 
-/* 中间卡片突出显示 */
-.vs-screen-card:nth-child(2) {
-  transform: scale(1.04);
-  transform-origin: top center;
-  z-index: 1;
+.vs-screen-card:nth-child(1):hover,
+.vs-screen-card:nth-child(2):hover,
+.vs-screen-card:nth-child(3):hover {
+  transform: scale(1.02) translateY(-2px);
+  z-index: 2;
 }
 
 /* APP WINDOW */
@@ -577,6 +591,37 @@ section {
 .vs-app-window:hover {
   transform: translateY(-4px);
   box-shadow: 0 28px 72px rgba(26,20,16,0.22), 0 0 0 1px rgba(0,0,0,0.07);
+}
+
+.vscode-screens .vs-screen-card > .vs-app-window {
+  min-height: 290px;
+}
+
+.vs-raw-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: unset;
+  background: #f5f5f5;
+  border-radius: 12px;
+  box-shadow: 0 20px 56px rgba(26,20,16,0.12);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transform-origin: center top;
+}
+
+/* Keep the left image fully visible without zooming/cropping */
+.vs-screen-card:nth-child(1) .vs-raw-image {
+  transform: none;
+  transform-origin: center center;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.vs-screen-card:nth-child(1):hover .vs-raw-image {
+  transform: none;
+  box-shadow: 0 28px 72px rgba(26,20,16,0.18);
 }
 
 .vsw-chrome {
@@ -784,7 +829,6 @@ section {
 .ovr-app-divider {
   margin-top: 72px;
   padding-top: 56px;
-  border-top: 1px solid var(--ink-rule, rgba(0,0,0,0.08));
   text-align: center;
 }
 .ovr-app-heading {
@@ -817,7 +861,6 @@ section {
   position: relative;
   overflow: hidden;
   border-top: 1px solid var(--ink-wash-2);
-  scroll-snap-align: center;
   background:
     radial-gradient(ellipse 64% 54% at 14% 22%, rgba(26,20,16,0.055) 0%, transparent 66%),
     radial-gradient(ellipse 56% 46% at 86% 78%, rgba(122,58,16,0.07) 0%, transparent 62%);
@@ -842,6 +885,39 @@ section {
   text-decoration: none;
   transition: color 0.2s;
 }
+.footer-links span {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.footer-contact {
+  position: relative;
+}
+.footer-contact summary {
+  list-style: none;
+  font-size: 13px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.footer-contact summary::-webkit-details-marker {
+  display: none;
+}
+.footer-contact[open] summary,
+.footer-contact summary:hover {
+  color: var(--ink-black);
+}
+.footer-contact .footer-address {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(250, 247, 243, 0.96);
+  border: 1px solid var(--ink-wash-2);
+  box-shadow: 0 8px 24px rgba(26, 20, 16, 0.08);
+}
 .footer-links a:hover { color: var(--ink-black); }
 .footer-copy {
   font-size: 12px;
@@ -852,10 +928,60 @@ section {
 /* ============================================
    RESPONSIVE
    ============================================ */
+/* Hamburger button */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink-black);
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile nav dropdown */
+.nav-mobile {
+  display: none;
+  flex-direction: column;
+  background: rgba(250, 247, 243, 0.98);
+  border-top: 1px solid rgba(26,20,16,0.08);
+  padding: 12px 0;
+}
+.nav-mobile.open { display: flex; }
+.nav-mobile li { list-style: none; }
+.nav-mobile a {
+  display: block;
+  padding: 11px 28px;
+  color: rgba(26,20,16,0.7);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-mobile a:hover { color: var(--ink-black); background: rgba(26,20,16,0.04); }
+
 @media (max-width: 900px) {
   :root { --section-gap: 80px; }
 
   .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
 
   .hero-title { font-size: clamp(40px, 10vw, 72px); }
 

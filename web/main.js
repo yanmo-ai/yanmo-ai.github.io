@@ -2,7 +2,128 @@
    言墨 · JavaScript
    - Navbar scroll effect
    - Scroll reveal animations
+   - Section-by-section wheel scroll
    ============================================ */
+
+/* ---- Section Wheel Scroll ---- */
+(function () {
+  function getTargets() {
+    return Array.from(document.querySelectorAll('section'));
+  }
+
+  var scrolling = false;
+  var cooldown = 900;
+  var snapThreshold = 30; // px – if already within this distance of section top, don't snap
+
+  // Which section index the viewport top is currently inside
+  function getCurrentIndex(targets) {
+    var scrollTop = window.scrollY;
+    for (var i = targets.length - 1; i >= 0; i--) {
+      var rect = targets[i].getBoundingClientRect();
+      var elTop = scrollTop + rect.top;
+      if (scrollTop >= elTop - 10) return i;
+    }
+    return 0;
+  }
+
+  function scrollToIndex(targets, index) {
+    if (index < 0 || index >= targets.length) return;
+    scrolling = true;
+    targets[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () { scrolling = false; }, cooldown);
+  }
+
+  // Accumulate wheel delta to filter out tiny touchpad ticks
+  var wheelAccum = 0;
+  var wheelResetTimer = null;
+  var wheelDeltaThreshold = 50; // cumulative px before triggering a page switch
+  var lastWheelTime = 0;
+
+  window.addEventListener('wheel', function (e) {
+    // Allow scroll inside overflowing inner elements (code blocks, etc.)
+    var node = e.target;
+    while (node && node !== document.body) {
+      var st = window.getComputedStyle(node);
+      var ov = st.overflowY;
+      if ((ov === 'auto' || ov === 'scroll') && node.scrollHeight > node.clientHeight) return;
+      node = node.parentElement;
+    }
+
+    var now = Date.now();
+    if (scrolling || now - lastWheelTime < cooldown) return;
+
+    // Accumulate delta; reset after a pause
+    wheelAccum += e.deltaY;
+    clearTimeout(wheelResetTimer);
+    wheelResetTimer = setTimeout(function () { wheelAccum = 0; }, 300);
+
+    // Only trigger when accumulated delta exceeds threshold
+    if (Math.abs(wheelAccum) < wheelDeltaThreshold) return;
+
+    var targets = getTargets();
+    var idx = getCurrentIndex(targets);
+    var el = targets[idx];
+    var rect = el.getBoundingClientRect();
+    var vh = window.innerHeight;
+    var isTall = el.offsetHeight > vh + 5;
+
+    if (wheelAccum > 0) {
+      if (isTall && rect.bottom > vh + 5) { wheelAccum = 0; return; }
+      wheelAccum = 0;
+      lastWheelTime = now;
+      scrollToIndex(targets, idx + 1);
+    } else if (wheelAccum < 0) {
+      if (isTall && rect.top < -5) { wheelAccum = 0; return; }
+      wheelAccum = 0;
+      lastWheelTime = now;
+      scrollToIndex(targets, idx - 1);
+    }
+  }, { passive: true });
+
+  // Scrollbar / keyboard scroll: snap after settling.
+  var snapTimer = null;
+  var lastObservedScrollY = window.scrollY;
+  var lastScrollDirection = 0;
+  window.addEventListener('scroll', function () {
+    if (scrolling) return;
+
+    var currentY = window.scrollY;
+    if (Math.abs(currentY - lastObservedScrollY) > 1) {
+      lastScrollDirection = currentY > lastObservedScrollY ? 1 : -1;
+    }
+    lastObservedScrollY = currentY;
+
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(function () {
+      if (scrolling) return;
+
+      var targets = getTargets();
+      var idx = getCurrentIndex(targets);
+      var el = targets[idx];
+      var rect = el.getBoundingClientRect();
+      var vh = window.innerHeight;
+      var isTall = el.offsetHeight > vh + 5;
+
+      // Tall section middle area: do not force snap.
+      if (isTall && rect.top < -5 && rect.bottom > vh + 5) return;
+
+      // Already close enough to section top – skip to avoid jitter
+      if (Math.abs(rect.top) < snapThreshold) return;
+
+      // Reaching boundary of tall section should move to adjacent page
+      if (isTall && lastScrollDirection > 0 && rect.bottom <= vh + 5 && idx < targets.length - 1) {
+        scrollToIndex(targets, idx + 1);
+        return;
+      }
+      if (isTall && lastScrollDirection < 0 && rect.top >= -5 && idx > 0) {
+        scrollToIndex(targets, idx - 1);
+        return;
+      }
+
+      scrollToIndex(targets, idx);
+    }, 350);
+  }, { passive: true });
+})();
 
 /* ---- Navbar Scroll ---- */
 (function () {

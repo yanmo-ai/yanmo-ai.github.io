@@ -52,6 +52,8 @@
         display: flex;
         align-items: center;
         background: transparent;
+        background-size: 100% max(100%, 100vh);
+        background-repeat: no-repeat;
         color: var(--text);
         position: relative;
         overflow: hidden;
@@ -69,12 +71,16 @@
         background:
           radial-gradient(ellipse 70% 50% at 10% 30%, rgba(122,58,16,0.06) 0%, transparent 65%),
           radial-gradient(ellipse 55% 45% at 90% 70%, rgba(26,20,16,0.04) 0%, transparent 60%);
+        background-size: 100% max(100%, 100vh);
+        background-repeat: no-repeat;
       }
       /* vscode section 青蓝晕 */
       .vscode-ext-section {
         background:
           radial-gradient(ellipse 65% 50% at 85% 25%, rgba(30,77,122,0.07) 0%, transparent 65%),
           radial-gradient(ellipse 50% 40% at 10% 75%, rgba(42,92,58,0.055) 0%, transparent 60%);
+        background-size: 100% max(100%, 100vh);
+        background-repeat: no-repeat;
       }
       /* overview-app 暖色延续 */
       .overview-app-section {
@@ -85,6 +91,8 @@
         align-items: center;
         background:
           radial-gradient(ellipse 60% 50% at 50% 50%, rgba(122,58,16,0.045) 0%, transparent 70%);
+        background-size: 100% max(100%, 100vh);
+        background-repeat: no-repeat;
       }
       /* 拓宽三屏展示区的容器宽度，避免窗口显得过于瘦长 */
       .overview-app-section .container {

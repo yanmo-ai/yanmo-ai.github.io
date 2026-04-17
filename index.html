@@ -3979,6 +3979,98 @@
         }
       }
 
+      /* ── 桌面端最小宽度锁定：禁止布局折叠 ── */
+      :root {
+        --container-w: 1200px !important;
+      }
+      .overview-section,
+      .demo-section,
+      .vscode-ext-section,
+      .overview-app-section,
+      .feat-section {
+        display: flex !important;
+        min-height: 100vh !important;
+        padding: 108px 0 92px !important;
+      }
+      .vscode-ext-section {
+        padding: 72px 0 56px !important;
+      }
+      .overview-app-section {
+        padding: 72px 0 56px !important;
+      }
+      .container {
+        padding: 0 48px !important;
+      }
+      /* VS Code 双栏锁定 */
+      .vsc-body {
+        grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr) !important;
+        gap: 32px !important;
+      }
+      .vsc-editor-window {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        min-height: 560px !important;
+        max-height: none !important;
+      }
+      .vsc-features {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        width: min(288px, 100%) !important;
+        justify-self: end !important;
+      }
+      /* feat-wrap 双栏锁定 */
+      .feat-wrap {
+        grid-template-columns: 420px minmax(0, 1fr) !important;
+        gap: 112px !important;
+      }
+      .feat-wrap.flip {
+        grid-template-columns: minmax(0, 1fr) 420px !important;
+      }
+      #recording .feat-wrap,
+      #polish .feat-wrap,
+      #command .feat-wrap {
+        grid-template-columns: minmax(0, 1fr) 680px !important;
+      }
+      #platform .feat-wrap {
+        grid-template-columns: 420px 520px !important;
+        gap: 88px !important;
+      }
+      #openclaw .feat-wrap {
+        grid-template-columns: 460px 680px !important;
+        gap: 80px !important;
+      }
+      #yanmo .feat-wrap.flip,
+      #history .feat-wrap.flip {
+        grid-template-columns: 700px minmax(0, 1fr) !important;
+      }
+      #phrases .feat-wrap.flip {
+        grid-template-columns: 700px minmax(0, 1fr) !important;
+        gap: 128px !important;
+      }
+      /* 禁止 app-window 被 max-height 截断 */
+      .app-window,
+      #recording .app-window,
+      #yanmo .app-window,
+      #phrases .app-window,
+      #command .app-window,
+      #openclaw .app-window,
+      #history .app-window {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .feat-wrap:not(.flip) .feat-text {
+        transform: translateY(-14px) !important;
+      }
+      .feat-wrap:not(.flip) .feat-visual {
+        transform: translateY(20px) !important;
+      }
+      .feat-wrap.flip .feat-text {
+        transform: translateY(14px) !important;
+      }
+      .feat-wrap.flip .feat-visual {
+        transform: translateY(-20px) !important;
+      }
+
     </style>
   </head>
   <body>
@@ -4656,7 +4748,7 @@
             VS Code Extension &#xB7; &#x5DF2;&#x4E0A;&#x67B6; Marketplace
           </div>
           <h2 class="vsc-title">代码编辑器里的<br />语音输入助手</h2>
-          <p class="vsc-sub">VS Code 言墨助手可与桌面端联动，在编辑器中直接语音输入，语音内容可实时转成代码注释、文档与提交信息，带来更顺畅的 Vibe Coding 体验。</p>
+          <p class="vsc-sub">言墨 VS Code 插件将编辑器中打开的文件作为文本开放给客户端，配合 GitHub Copilot、Claude Code 等 Agent，把语音指令实时落地为具体操作，让 Vibe Coding 更顺手自然。</p>
         </div>
 
         <div class="vsc-body reveal">
@@ -4729,8 +4821,8 @@
           <div class="vsc-features">
             <div class="vsc-feat-card vibe">
               <div class="vfc-icon" aria-hidden="true">✨</div>
-              <div class="vfc-title">Vibe Coding 模式</div>
-              <div class="vfc-desc">说出你想实现的功能，言墨将口语指令转为指令操作，配合 AI 代码补全工具，让「先说后写」真正落地。声音是最自然的编程语言。</div>
+              <div class="vfc-title">Agent 协同</div>
+              <div class="vfc-desc">插件会将 VS Code 中打开的文档与工作区开放给言墨，精准识别其中的函数、变量与文件名；结合 Code Agent 让口述顺势落成高质量的代码。</div>
             </div>
             <!-- 言墨 Side Panel -->
             <div class="vsc-panel">

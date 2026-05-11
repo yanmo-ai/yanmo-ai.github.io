@@ -912,17 +912,24 @@ section {
 .footer-contact summary:hover {
   color: var(--ink-black);
 }
-.footer-contact .footer-address {
+.footer-contact .footer-contact-bubble {
   position: absolute;
   left: 50%;
   bottom: calc(100% + 10px);
   transform: translateX(-50%);
   white-space: nowrap;
-  padding: 8px 12px;
-  border-radius: 999px;
+  padding: 10px 16px;
+  border-radius: 12px;
   background: rgba(250, 247, 243, 0.96);
   border: 1px solid var(--ink-wash-2);
   box-shadow: 0 8px 24px rgba(26, 20, 16, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.footer-contact .footer-contact-bubble a {
+  color: inherit;
+  text-decoration: underline;
 }
 .footer-links a:hover { color: var(--ink-black); }
 .footer-copy {
